@@ -16,7 +16,13 @@
 <body>
     <h1>Webcam Capabilities</h1>
     <select id="videoDevices"></select>
+    <select id="frameRates"></select>
     <button id="getCapabilities">Get Capabilities</button>
+    <button id="startCamera">Start Camera</button>
+    <video
+        id="webcam"
+        autoplay
+    ></video>
     <pre id="capabilitiesOutput"></pre>
     <script
         type="module"

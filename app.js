@@ -1,12 +1,13 @@
 const videoDevicesSelect = document.getElementById('videoDevices');
+const frameRatesSelect = document.getElementById('frameRates');
 const getCapabilitiesButton = document.getElementById('getCapabilities');
+const startCameraButton = document.getElementById('startCamera');
 const capabilitiesOutput = document.getElementById('capabilitiesOutput');
+const video = document.getElementById('webcam');
 
 // Populate the video devices dropdown
 navigator.mediaDevices.enumerateDevices()
     .then(devices => {
-
-        console.log(devices); // Log all devices
         devices.forEach(device => {
             if (device.kind === 'videoinput') {
                 const option = document.createElement('option');
@@ -34,6 +35,19 @@ const getCapabilities = async () => {
 
         capabilitiesOutput.textContent = JSON.stringify(capabilities, null, 2);
 
+        // Populate frame rates
+        frameRatesSelect.innerHTML = '';
+        if (capabilities.frameRate) {
+            const minFrameRate = capabilities.frameRate.min;
+            const maxFrameRate = capabilities.frameRate.max;
+            for (let rate = minFrameRate; rate <= maxFrameRate; rate++) {
+                const option = document.createElement('option');
+                option.value = rate;
+                option.text = `${rate} fps`;
+                frameRatesSelect.appendChild(option);
+            }
+        }
+
         // Stop the stream after getting capabilities
         track.stop();
     } catch (err) {
@@ -49,5 +63,25 @@ const getCapabilities = async () => {
     }
 };
 
-// Attach event listener to the button
+// Function to start the camera with selected frame rate
+const startCamera = async () => {
+    const deviceId = videoDevicesSelect.value;
+    const frameRate = frameRatesSelect.value;
+    const constraints = {
+        video: {
+            deviceId: deviceId ? { exact: deviceId } : undefined,
+            frameRate: frameRate ? { ideal: parseFloat(frameRate) } : undefined
+        }
+    };
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
+    } catch (err) {
+        console.error('Error starting the webcam: ', err);
+    }
+};
+
+// Attach event listeners to buttons
 getCapabilitiesButton.addEventListener('click', getCapabilities);
+startCameraButton.addEventListener('click', startCamera);
