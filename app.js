@@ -5,6 +5,8 @@ const capabilitiesOutput = document.getElementById('capabilitiesOutput');
 // Populate the video devices dropdown
 navigator.mediaDevices.enumerateDevices()
     .then(devices => {
+
+        console.log(devices); // Log all devices
         devices.forEach(device => {
             if (device.kind === 'videoinput') {
                 const option = document.createElement('option');
