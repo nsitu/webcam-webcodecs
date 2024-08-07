@@ -85,3 +85,14 @@ const startCamera = async () => {
 // Attach event listeners to buttons
 getCapabilitiesButton.addEventListener('click', getCapabilities);
 startCameraButton.addEventListener('click', startCamera);
+
+
+document.getElementById('videoCapture').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    if (file) {
+        const videoPreview = document.getElementById('videoPreview');
+        videoPreview.src = URL.createObjectURL(file);
+        videoPreview.load();
+        videoPreview.play();
+    }
+});
